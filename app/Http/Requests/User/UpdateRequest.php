@@ -37,6 +37,7 @@ class UpdateRequest extends FormRequest
             'email' => 'nullable|email|email:dns|unique:user_auth,email,'. $this->id,
             'password' => 'nullable|min:6',
             'phone_number' => 'nullable',
+            'status' => 'nullable',
         ];
     }
 

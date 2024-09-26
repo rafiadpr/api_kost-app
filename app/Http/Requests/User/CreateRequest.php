@@ -37,6 +37,7 @@ class CreateRequest extends FormRequest
             'email' => 'required|email|unique:user_auth|email:dns', // Validasi email unik berdasarkan data di tabel user_auth
             'password' => 'required|min:6',
             'phone_number' => 'nullable',
+            'status' => 'nullable',
         ];
     }
 

@@ -2,23 +2,16 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UnitCategoryController;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\UnitAssetController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthCustomerController;
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -54,5 +47,45 @@ Route::prefix('v1')->group(function () {
     Route::post('/unit-category', [UnitCategoryController::class, 'store']);
     Route::put('/unit-category/{id}', [UnitCategoryController::class, 'update']);
     Route::delete('/unit-category/{id}', [UnitCategoryController::class, 'destroy']);
-    
+
+    Route::get('/units', [UnitController::class, 'index']);
+    Route::get('/units/{id}', [UnitController::class, 'show']);
+    Route::post('/units', [UnitController::class, 'store']);
+    Route::put('/units/{id}', [UnitController::class, 'update']);
+    Route::delete('/units/{id}', [UnitController::class, 'destroy']);
+
+    Route::get('/unit-asset', [UnitAssetController::class, 'index']);
+    Route::get('/unit-asset/{id}', [UnitAssetController::class, 'show']);
+    Route::post('/unit-asset', [UnitAssetController::class, 'store']);
+    Route::put('/unit-asset/{id}', [UnitAssetController::class, 'update']);
+    Route::delete('/unit-asset/{id}', [UnitAssetController::class, 'destroy']);
+
+    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::get('/auth/profile', [AuthController::class, 'profile'])->middleware(['auth.api']);
+
+    Route::post('/auth/forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('password.email'); //halaman forget password, untuk input email terus submit
+    Route::get('/auth/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get'); //tampilan di email, untuk masuk ke halaman reset password
+    Route::post('/auth/reset-password/{token}', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post'); //halaman reset password, untuk input password baru
+
+    Route::post('/auth/otp-request', [AuthController::class, 'submitForgetPasswordForm'])->name('otp.email');
+    Route::get('/auth/otp-validation/{token}', [AuthController::class, 'showResetPasswordForm'])->name('otp.get');
+    Route::post('/auth/otp-validation/{token}', [AuthController::class, 'submitResetPasswordForm'])->name('otp.post');
+
+    Route::post('/auth/login-customer', [AuthCustomerController::class, 'login']);
+    Route::get('/auth/profile-customer', [AuthCustomerController::class, 'profile'])->middleware(['auth.api']);
+    // Route::middleware('auth:api_customer')->get('/auth/profile-customer', [AuthCustomerController::class, 'profile']);
+
+    Route::post('/auth/forget-password-customer', [AuthCustomerController::class, 'submitForgetPasswordForm'])->name('forget.customer'); //halaman forget password, untuk input email terus submit
+    Route::get('/auth/get-forget-token/{token}', [AuthCustomerController::class, 'getTokenCustomer']);
+    Route::put('/auth/update-password', [AuthCustomerController::class, 'updatePassword']);
+
+    Route::post('/auth/kirim-otp', [AuthCustomerController::class, 'kirimOtp']);
+    Route::get('/auth/cek-email-otp/{email}', [AuthCustomerController::class, 'getEmailOtpCustomer']);
+    Route::get('/auth/cek-otp', [AuthCustomerController::class, 'verifyOtp']);
+
+    Route::get('/route-cache', function() {
+        $exitCode = Artisan::call('optimize:clear');
+        echo "optimized";
+        return print_r($exitCode);
+    });
 });

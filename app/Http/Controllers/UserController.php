@@ -24,7 +24,7 @@ class UserController extends Controller
         $filter = [
             'name' => $request->name ?? '',
             'email' => $request->email ?? '',
-            'phone_number' => $request->phone_number ?? '',
+            'status' => $request->status ?? '',
         ];
         $users = $this->user->getAll($filter, $request->per_page ?? 25, $request->sort ?? '');
 
@@ -47,7 +47,7 @@ class UserController extends Controller
             return response()->json($request->validator->errors(), 422);
         }
 
-        $payload = $request->only(['email', 'name', 'password', 'photo', 'user_roles_id', 'phone_number']);
+        $payload = $request->only(['email', 'name', 'password', 'photo', 'user_roles_id', 'phone_number', 'status']);
         // dd($payload);
         $user = $this->user->create($payload);
 
@@ -57,7 +57,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'task berhasil ditambah',
+            'message' => 'user berhasil ditambah',
             'data' => new UserResource($user['data']),
         ], 200);
     }
@@ -68,7 +68,7 @@ class UserController extends Controller
             return response()->json($request->validator->errors());
         }
 
-        $payload = $request->only(['email', 'name', 'password', 'photo', 'user_roles_id', 'phone_number']);
+        $payload = $request->only(['email', 'name', 'password', 'photo', 'user_roles_id', 'phone_number', 'status']);
         $user = $this->user->update($payload, $request->id);
 
         // dd($payload);

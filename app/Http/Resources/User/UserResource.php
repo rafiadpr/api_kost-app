@@ -25,6 +25,7 @@ class UserResource extends JsonResource
                 : asset('no-image/no-image-profile.png'),
             'updated_security' => $this->updated_security,
             'phone_number' => $this->phone_number,
+            'status' => (string) $this->status,
             'user_roles_id' => (string) $this->user_roles_id,
             'access' => isset($this->role->access) ? json_decode($this->role->access) : [],
         ];

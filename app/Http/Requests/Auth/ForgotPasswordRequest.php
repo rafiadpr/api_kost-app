@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class AuthRequest extends FormRequest
+class ForgotPasswordRequest extends FormRequest
 {
     public $validator;
 
@@ -23,7 +23,6 @@ class AuthRequest extends FormRequest
     {
         return [
             'email'    => 'required',
-            'password' => 'required',
         ];
     }
 }

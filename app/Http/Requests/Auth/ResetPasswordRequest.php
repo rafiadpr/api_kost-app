@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class AuthRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     public $validator;
 
@@ -22,8 +22,9 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'    => 'required',
-            'password' => 'required',
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8',
         ];
     }
 }

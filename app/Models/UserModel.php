@@ -7,16 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class UserModel extends Model implements CrudInterface
+class UserModel extends Authenticatable implements CrudInterface, JWTSubject, MustVerifyEmail
 {
     use HasFactory;
     use SoftDeletes; // Use SoftDeletes library
     use Uuid;
-    
+    use Notifiable, CanResetPassword;
+
     protected $table = 'user_auth';
     public $timestamps = true;
-    
+
     protected $fillable = [
         'name',
         'email',
@@ -24,10 +30,12 @@ class UserModel extends Model implements CrudInterface
         'photo',
         'user_roles_id',
         'phone_number',
+        'status'
     ];
 
     protected $attributes = [
         'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
+        'status' => 1
     ];
 
     protected $casts = [
@@ -37,6 +45,22 @@ class UserModel extends Model implements CrudInterface
     public function role()
     {
         return $this->hasOne(RoleModel::class, 'id', 'user_roles_id');
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [
+            'user' => [
+                'id' => $this->id,
+                'email' => $this->email,
+                'updated_security' => $this->updated_security
+            ]
+        ];
     }
 
     public function isHasRole($permissionName)
